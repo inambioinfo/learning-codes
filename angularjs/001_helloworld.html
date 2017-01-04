@@ -1,0 +1,154 @@
+<!doctype html>
+<html >
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    </head>
+    <body>
+        <div ng-app="myApp" >
+            <div ng-controller="myCtrl">
+                {{ firstName + " " + lastName }}
+                Full Name: {{ fullName() }}
+            </div>
+        
+            <div ng-controller="repeatCtrl">
+                <ul>
+                    <li ng-repeat="x in names | orderBy:'country'">
+                        {{ x.name + ',' + x.country }}
+                    </li>
+                </ul>
+            </div>
+            
+            <div ng-controller="myCtrl-1">
+                Name:<input ng-model = "name">
+                <h1>You entered:{{name}}</h1>
+            </div>
+            
+            <!-- // Validate User input -->
+            <div >
+                <form name="myForm" ng-init="text='liucj@hust'">
+                    Email:<input type="email" name="myAddress" ng-model="text" required>
+                    <span ng-show="myForm.myAddress.$error.email">Not a valid e-mail address</span>
+                    <h1>Status</h1>
+                    <p>Valid: {{myForm.myAddress.$valid}} (if true, the value meets all criteria).</p>
+                    <p>Dirty: {{myForm.myAddress.$dirty}} (if true, the value has been changed).</p>
+                    <p>Touched: {{myForm.myAddress.$touched}} (if true, the field has been in focus).</p>
+                </form>
+            </div>
+            
+            <div ng-controller="myCtrl-2">
+                <h1 ng-click="changeName()">{{firstName}}</h1>
+            </div>
+            <!-- angular filters -->
+            <!-- filter an array based on user input -->
+            <div ng-controller="namesCtrl">
+                <p><input type = "text" ng-model="test"></p>
+                <ul>
+                    <li ng-repeat="x in names | filter: test">
+                        {{ x }}
+                    </li>
+                </ul>
+            </div>
+            <!-- Sort by array based on user input -->
+            <div ng-controller="namesCtrl-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th >ID</th>
+                            <th ng-click="orderByMe('name')">Name</th>
+                            <th ng-click="orderByMe('country')">Country</th>
+                            <th ng-click="orderByMe('age')">Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in names | orderBy: myOrderBy">
+                            <td>{{$index+1}}</td>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.country }}</td>
+                            <td>{{ x.age }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <!-- angular service: location -->
+            <div ng-controller="locationCtrl">
+                <p>The url of this page is:</p>
+                <h3>{{ myURL }}</h3>
+            </div>
+        
+            <!-- angular service:timeout -->
+            <div ng-controller="timeoutCtrl">
+                <p>This header will change after two seconds</p>
+                <h1>{{ myHeader }}</h1>
+            </div>
+            
+            <!-- angular service: interval -->
+            <div ng-controller="intervalCtrl">
+                <p>The time is:</p>
+                <h1>{{theTime}}</h1>
+            </div>
+        
+            <!-- angular service: http -->
+            <div ng-controller="httpCtrl"> 
+                <p>Data : {{content}}</p>
+                <p>Status : {{statuscode}}</p>
+                <p>StatusText : {{statustext}}</p>
+                <p>headers: {{headers}}</p>
+                <p>config: {{config}}</p>
+                <ul>
+                    <li ng-repeat="x in myData| orderBy: 'Country'">{{x.Name + ", " + x.Country}}</li>
+                </ul>
+            </div>
+            
+            <!-- dropdown list -->
+            <div ng-controller="dropDown">
+                <select ng-model = "selectName" ng-options = "x for x in names"></select>
+                <h1>{{ selectName}}</h1>
+            </div>
+            
+            <!-- Radiobuttons -->
+            <div ng-controller="radioCtrl">
+                <form>
+                    Pick a topic:
+                    <input type="radio" ng-model="myVar" value="dogs">Dogs
+                    <input type="radio" ng-model="myVar" value="tuts">Tutorials
+                    <input type="radio" ng-model="myVar" value="cars">Cars
+                </form>
+                <div ng-switch="myVar">
+                  <div ng-switch-when="dogs">
+                     <h1>Dogs</h1>
+                     <p>Welcome to a world of dogs.</p>
+                  </div>
+                  <div ng-switch-when="tuts">
+                     <h1>Tutorials</h1>
+                     <p>Learn from examples.</p>
+                  </div>
+                  <div ng-switch-when="cars">
+                     <h1>Cars</h1>
+                     <p>Read about cars.</p>
+                  </div>
+                </div>
+            </div>
+            
+            <!-- checkbox -->
+            <div ng-controller="checkboxCtrl">
+                <form>
+                    Check to show a header:
+                    <input type="checkbox" ng-model="myVar">
+                </form>
+                <h1 ng-show="myVar">My Header</h1>
+                
+            </div>
+            
+            
+            
+        </div>
+        <script src="myApp.js"></script>
+        <script src="myCtrl.js"></script>
+    </body>
+</html>
