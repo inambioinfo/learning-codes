@@ -16,3 +16,8 @@ l
 mv angularjs AngularJS
 ls
 git status
+git add -A
+git commit -m "learn from chirp module-2"
+git push origin master
+git status
+git commit -m "learn from chirp module-2"
