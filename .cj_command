@@ -14,3 +14,7 @@ ll
 cd ../
 ls
 git status
+git add -A
+git commit -m 'adv-r'
+git push origin master
+cd ../
