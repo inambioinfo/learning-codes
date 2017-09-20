@@ -1,0 +1,16 @@
+ls
+ll
+cd AngularJS/
+l
+cd ../
+ls
+ll
+cd ../
+ls
+ll
+cd ../
+ls
+ll
+cd ../
+ls
+git status
