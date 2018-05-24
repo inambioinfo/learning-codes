@@ -1,0 +1,125 @@
+#!/bin/bash
+#############
+#$1 $ourdir
+#$2 $finalSNP
+#$3 $finalINDEl
+#$4 $pe1
+#$5 $pe2
+#$6 $reference ##now i dont have hg 38 data, so genome reference is hg19
+########################################################################
+
+#annotation out file
+mkdir $1/annotation
+ANNOVAR_OUTFILE=$1/annotation
+ANNOVAR_PERL=/home/liucj/tools/annovar
+SCRIPT=/home/liucj/piplines/scripts
+
+mkdir $ANNOVAR_OUTFILE/snp
+mkdir $ANNOVAR_OUTFILE/indel
+
+ANO_SNP_OUTFILE=$ANNOVAR_OUTFILE/snp
+ANO_INDEL_OUTFILE=$ANNOVAR_OUTFILE/indel
+HUMANDB=/project/liucj/REFDATA/humandb
+SNP=$2
+INDEL=$3
+FINAL_NAME=$4.$5
+#OONVERT VCF TO ANNOVAR INPUT FILE
+perl $ANNOVAR_PERL/convert2annovar.pl -format  vcf4 -i $SNP > $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput
+perl $SCRIPT/vcf.avinput_2_avinput.mod.pl $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput
+
+perl $ANNOVAR_PERL/convert2annovar.pl -format  vcf4 -i $INDEL > $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput
+perl $SCRIPT/vcf.avinput_2_avinput.mod.pl $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput
+
+
+
+#annotation
+perl $ANNOVAR_PERL/table_annovar.pl \
+$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput \
+$HUMANDB \
+-buildver hg19 \
+-protocol refGene,ensGene,knownGene,ccdsGene,sift,cosmic65,esp6500si_all \
+-operation g,g,g,g,f,f,f \
+-nastring . \
+-outfile $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput
+
+perl $SCRIPT/annovar_avinput.mod_intersection.pl \
+ -anno $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt \
+ -mod $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.mod 
+
+perl $SCRIPT/GMAF_2_anno.pl -i $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual 
+
+perl $SCRIPT/get_GMAF_ls_0.2.pl $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF
+
+awk -f $SCRIPT/indel_ExonicFunc.refGene.awk18 $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns
+
+awk -f $SCRIPT/get_UTR.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.UTR
+
+awk -f $SCRIPT/get_splicing.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.splicing
+
+awk -f $SCRIPT/get_up_downstream.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.up_downstream
+
+awk -f $SCRIPT/get_demand.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.demand
+
+grep -v "rs" $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns>$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns.nodbsnp
+
+perl $SCRIPT/get_GMAF_ls_0.05.pl $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF
+
+awk -f $SCRIPT/indel_ExonicFunc.refGene.awk18 $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns
+
+awk -f $SCRIPT/get_UTR.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.UTR
+
+awk -f $SCRIPT/get_splicing.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.splicing
+
+awk -f $SCRIPT/get_up_downstream.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.up_downstream
+
+awk -f $SCRIPT/get_demand.awk $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.demand
+
+grep -v "rs" $ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns>$ANO_INDEL_OUTFILE/$FINAL_NAME.indel.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns.nodbsnp
+
+
+
+perl $ANNOVAR_PERL/table_annovar.pl \
+$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput \
+$HUMANDB \
+-buildver hg19 \
+-protocol refGene,ensGene,knownGene,ccdsGene,sift,cosmic65,esp6500si_all \
+-operation g,g,g,g,f,f,f \
+-nastring . \
+-outfile $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput
+
+perl $SCRIPT/annovar_avinput.mod_intersection.pl \
+ -anno $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt \
+ -mod $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.mod
+
+perl $SCRIPT/GMAF_2_anno.pl -i $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual
+
+perl $SCRIPT/get_GMAF_ls_0.2.pl $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF
+
+awk -f $SCRIPT/snp_ExonicFunc.refGene.awk18 $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns
+
+awk -f $SCRIPT/get_UTR.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.UTR
+
+awk -f $SCRIPT/get_splicing.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.splicing
+
+awk -f $SCRIPT/get_up_downstream.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.up_downstream
+
+awk -f $SCRIPT/get_demand.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.demand
+
+grep -v "rs" $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns>$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.2.ns.nodbsnp 
+
+
+perl $SCRIPT/get_GMAF_ls_0.05.pl $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF
+
+awk -f $SCRIPT/snp_ExonicFunc.refGene.awk18 $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns
+
+awk -f $SCRIPT/get_UTR.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.UTR
+
+awk -f $SCRIPT/get_splicing.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.splicing
+
+awk -f $SCRIPT/get_up_downstream.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.up_downstream
+
+awk -f $SCRIPT/get_demand.awk $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05 >$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.demand
+
+grep -v "rs" $ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns>$ANO_SNP_OUTFILE/$FINAL_NAME.snp.final.vcf.avinput.hg19_multianno.txt.qual.GMAF.ls_0.05.ns.nodbsnp 
+
+
