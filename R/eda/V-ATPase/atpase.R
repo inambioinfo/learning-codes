@@ -40,4 +40,4 @@ expr %>%
 
 gene_list_mean_expr %>% 
   dplyr::mutate_if(.predicate = is.numeric, .funs = round, digits = 2) %>% 
-  writexl::write_xlsx(path = "slc-gene-list-mean-expr.xlsx",col_names = TRUE)
+  writexl::write_xlsx(path = file.path(root, "v-atpase-gene-list-mean-expr.xlsx"),col_names = TRUE)
