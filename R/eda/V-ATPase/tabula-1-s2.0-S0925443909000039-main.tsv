@@ -1,0 +1,24 @@
+Subunit	Gene	Chromosomal	Swiss-Prot entry	Swiss-Prot acc.	Tissue	Function	References
+A	ATP6V1A	3q13.2–q13.31	VATA_HUMAN	P38606	Ubiquitous	ATP binding and hydrolysis	[130]
+B1	ATP6V1B1	2p13.1	VATB1_HUMAN	P153131	Kidney, epididymis	ATP binding	[131]
+B2	ATP6V1B2	8p22–p21	VATB2_HUMAN	P2128	Ubiquitous	Regulation of ATP hydrolysis	
+C1	ATP6V1C1	8q22.3	VATC1_HUMAN	P21283	Ubiquitous	Regulation of V1–V0 interaction	[132–135]
+C2	ATP6V1C2	Chr. 2	VATC2_HUMAN	Q8NEY4	Placenta, lung, kidney	Element of peripheral stalk/stator	
+D	ATP6V1D	14q23–q24.2	VATD_HUMAN	Q9Y5K8	Ubiquitous	Element of central stalk/rotor	[136,137]
+E1	ATP6V1E1	22q11.1	VATE1_HUMAN	P36543	Testis	Structural element of peripheral stalk/	[28,133,138]
+E2	ATP6V1E2	2p21	VATE2_HUMAN	Q96A05	Ubiquitous	stator	
+F	ATP6V1F	7q32	VATF_HUMAN	Q16864	Ubiquitous	Element of central stalk/rotor	[139,140]
+G1	ATP6V1G1	9q32	VATG1_HUMAN	O75348	Ubiquitous	Structural element of peripheral stalk/	[140]
+G2	ATP6V1G2	6p21.3	VATG2_HUMAN	O95670	Brain, neuronal tissue	stator	
+G3	ATP6V1G3	1q31.3	VATG3_HUMAN	Q96LB4	Kidney, epididymis		
+H1	ATP6V1H	8q11.2	VATH_HUMAN	Q9UI12	Unknown	Regulation of ATP-hydrolysis	[31,84]
+a1	ATP6V0A1	17q21	VPP1_HUMAN	Q93050	Neuronal tissue	Intracellular targeting of ATPase,	[79,141–
+a2	ATP6V0A2	12q24.31	VPP2_HUMAN	Q9Y487	Ubiquitous	Proton pumping across membranes	
+a3	TCIRG1	11q13.2	VPP3_HUMAN	Q13488	Osteoclast	Regulation of versicle formation,	
+a4	ATP6V0A4	7q33–q34	VPP4_HUMAN	Q9HBG4	Kidney, inner ear,	pH sensor and regulator	
+c	ATP6V0C	16p13.3	VATL_HUMAN	P27449	Unknown	Proteolipid ring, proton transfer	[147–149]
+c	ATP6V0B	1p32.3	VATO_HUMAN	Q99437	Unknown	Proteolipid ring, proton transfer	[150,151]
+d1	ATP6V0D1	16q22	VA0D1_HUMAN	P61421	Ubiquitous	Connection of rotor with proteolipid	[133,152–
+d2	ATP6V0D2	Chr. 8	VA0D2_HUMAN	Q8N8Y2	Kidney, epididymis	ring	154]
+e1	ATP6V0E1	5q35.2	VA0E1_HUMAN	O15342	Unknown	Unknown	[43,135,155]
+e2	ATP6V0E2	7q36.1	VA0E2_HUMAN	Q8NHE4			
