@@ -7,7 +7,7 @@
 #!/bin/bash
 
 # ! pipeline scripts
-wes=/project/xiamx/exome/exome_pipline/wes_analysis.py
+wes=/home/liucj/project/pipelines/exome_pipeline/wes_analysis.py
 
 # ? data dir
 data_dir=/home/liucj/data/wxs/liujy/Project_C0571180007
