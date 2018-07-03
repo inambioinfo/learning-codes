@@ -1,9 +1,0 @@
-BEGIN{
-	FS="	";
-}
-{
-	if($15=="." || $15=="synonymous SNV" || $15=="unknown"){
-	next;
-	}
-	print $0;
-}
