@@ -1,0 +1,6 @@
+BEGIN{
+	FS="	";
+}
+{
+	if($15=="frameshift deletion" || $15=="frameshift insertion" || $15=="lossgain SNV" || $15=="stopgain SNV" || $15=="ExonicFunc.refGene"){print $0;}
+}
