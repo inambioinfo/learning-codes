@@ -121,8 +121,8 @@ c("snp", "indel") %>%
 # - One from parents one from new mutation
 # - Combine snp and indel
 
+# 3.1
 # combine data
-
 rel %>% 
   purrr::walk(
     .f = function(.x) {
@@ -135,27 +135,39 @@ rel %>%
     }
   )
 
-# common mutation
-common <- intersect(intersect(son$key, mother$key), father$key)
-setdiff(intersect(son$key, mother$key), common) -> set_son_mother
-setdiff(intersect(son$key, father$key), common) -> set_son_father
 
-son %>% 
-  dplyr::filter(key %in% c(set_son_father, set_son_mother)) %>% 
-  dplyr::mutate(
-    from = dplyr::case_when(
-      key %in% set_son_father ~ "father",
-      key %in% set_son_mother ~ "mother"
-    )
-  ) %>% 
-  dplyr::group_by(Gene.ensGene) %>% 
-  dplyr::do(dplyr::filter(., length(unique(from)) == 2)) %>% 
-  dplyr::ungroup() %>%
-  dplyr::select(-key) ->
-  son_mother_father
+# mutation source from unique, mother and father in one gene.
+combination <- c("unique", "mother", "father")
 
-.dir <- file.path(path_ana, "04-son-from-mother-father")
-if (!dir.exists(.dir)) dir.create(.dir)
-
-.xlsx <- glue::glue("son-from-mother-father-respectively.xlsx")
-if (!file.exists(file.path(.dir, .xlsx))) writexl::write_xlsx(son_mother_father, path = file.path(.dir, .xlsx))
+combination %>% 
+  combn(2, simplify = FALSE) %>% 
+  purrr::walk(
+    .f = function(.x) {
+      .y <-  setdiff(combination, .x)
+      
+      if ("unique" == .y) {
+        .common <- intersect(intersect(son$key, mother$key), father$key)
+        setdiff(intersect(son$key, get(.x[1])$key), .common) -> .x_1
+        setdiff(intersect(son$key, get(.x[2])$key), .common) -> .x_2
+      } else {
+        setdiff(son$key, get(.y)$key) -> .son
+        intersect(.son, get(.x[2])$key) -> .x_2
+        setdiff(.son, get(.x[2])$key) -> .x_1
+      }
+      
+      son %>%
+        dplyr::filter(key %in% c(.x_1, .x_2)) %>%
+        dplyr::mutate(from = dplyr::case_when(key %in% .x_1 ~ .x[1], key %in% .x_2 ~ .x[2])) %>%
+        dplyr::group_by(Gene.ensGene) %>%
+        dplyr::do(dplyr::filter(., length(unique(from)) == 2)) %>%
+        dplyr::ungroup() %>%
+        dplyr::select(-key) ->
+        .d
+      
+      .dir <- file.path(path_ana, "04-multiple-mutation-in-one-gene-from-different-source")
+      if (!dir.exists(.dir)) dir.create(.dir)
+      
+      .xlsx <- glue::glue("son-from-{.x[1]}-{.x[2]}-respectively.xlsx")
+      if (!file.exists(file.path(.dir, .xlsx))) writexl::write_xlsx(.d, path = file.path(.dir, .xlsx))
+    }
+  )
