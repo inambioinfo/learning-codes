@@ -12,9 +12,9 @@ import os,sys
 '''input anno txt file'''
 
 ##dbsnp reference
-dbsnp = '/project/liucj/REFDATA/dbSNP/hg19/snp142.txt'
+dbsnp = '/data/liucj/data/refdata/dbSNP/hg19/snp142.txt'
 ##index of dbsnp
-index = '/project/liucj/REFDATA/dbSNP/hg19/snp142.txt.idx.sort'
+index = '/data/liucj/data/refdata/dbSNP/hg19/snp142.txt.idx.sort'
 
 
 def change(ob):
